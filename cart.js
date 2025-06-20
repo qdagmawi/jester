@@ -54,6 +54,22 @@ class ShoppingCart {
             item.quantity = newQuantity;
         }
     }
+
+
+    clearCart() {
+        this.items.clear();
+    }
+
+    getTotalPrice() {
+        let total = 0;
+        for (const item of this.items.values()) {
+            total += item.price * item.quantity;
+        }
+        return total;
+    }
+
+
+
 }
 
 module.exports = ShoppingCart;

@@ -76,3 +76,27 @@ describe('getItems', () => {
     });
 });
 
+describe('clearCart', () => {
+    it('clears all items in the cart', () => {
+        cart.addItem({ id: '1', name: 'Apple', price: 1.0, quantity: 2 });
+        cart.clearCart();
+        expect(cart.getItems()).toHaveLength(0);
+    });
+
+    it('does nothing if the cart is already empty', () => {
+        cart.clearCart();
+        expect(cart.getItems()).toHaveLength(0);
+    });
+});
+
+describe('getTotalPrice', () => {
+    it('returns 0 for an empty cart', () => {
+        expect(cart.getTotalPrice()).toBe(0);
+    });
+
+    it('calculates total correctly', () => {
+        cart.addItem({ id: '1', name: 'Apple', price: 1.0, quantity: 2 }); // $2
+        cart.addItem({ id: '2', name: 'Banana', price: 0.5, quantity: 4 }); // $2
+        expect(cart.getTotalPrice()).toBe(4);
+    });
+});
