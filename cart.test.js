@@ -32,4 +32,47 @@ describe('addItem', () => {
     });
 });
 
+describe('removeItem', () => {
+    it('removes existing item', () => {
+        cart.addItem({ id: '1', name: 'Apple', price: 1.0, quantity: 2 });
+        cart.removeItem('1');
+        expect(cart.getItems()).toHaveLength(0);
+    });
+
+    it('throws if item does not exist', () => {
+        expect(() => cart.removeItem('non-existent')).toThrow();
+    });
+});
+
+describe('updateQuantity', () => {
+    it('updates quantity of an existing item', () => {
+        cart.addItem({ id: '1', name: 'Apple', price: 1.0, quantity: 2 });
+        cart.updateQuantity('1', 5);
+        expect(cart.getItems()[0].quantity).toBe(5);
+    });
+
+    it('removes item if new quantity is zero', () => {
+        cart.addItem({ id: '1', name: 'Apple', price: 1.0, quantity: 2 });
+        cart.updateQuantity('1', 0);
+        expect(cart.getItems()).toHaveLength(0);
+    });
+
+    it('does nothing if item does not exist', () => {
+        expect(() => cart.updateQuantity('non-existent', 3)).toThrow();
+        expect(cart.getItems()).toHaveLength(0);
+    });
+});
+
+describe('getItems', () => {
+    it('returns an empty array if the cart is empty', () => {
+        expect(cart.getItems()).toHaveLength(0);
+    });
+
+    it('returns all items in the cart', () => {
+        cart.addItem({ id: '1', name: 'Apple', price: 1.0, quantity: 2 });
+        cart.addItem({ id: '2', name: 'Banana', price: 0.5, quantity: 3 });
+        const items = cart.getItems();
+        expect(items).toHaveLength(2);
+    });
+});
 
