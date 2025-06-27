@@ -1,13 +1,12 @@
-// cart.js
 class ShoppingCart {
     constructor() {
-        this.items = new Map(); // key: itemId (string), value: item object
+        this.items = new Map();
     }
 
     addItem(item) {
         const { id, name, price, quantity } = item;
 
-        if (!id) {
+        if (!id || typeof id !== 'string' || id.trim() === '') {
             throw new Error('Item must have a non-empty "id".');
         }
         if (typeof price !== 'number' || price < 0) {
@@ -18,13 +17,18 @@ class ShoppingCart {
         }
 
         const itemId = String(id);
-        if (this.items.has(itemId)) {
-            const existing = this.items.get(itemId);
-            existing.quantity += quantity;
+        const existingItem = this.items.get(itemId);
+
+        if (existingItem) {
+            this.items.set(itemId, {
+                ...existingItem,
+                quantity: existingItem.quantity + quantity,
+            });
         } else {
             this.items.set(itemId, { id: itemId, name, price, quantity });
         }
     }
+
     getItems() {
         return Array.from(this.items.values());
     }
@@ -39,7 +43,9 @@ class ShoppingCart {
 
     updateQuantity(itemId, newQuantity) {
         const key = String(itemId);
-        if (!this.items.has(key)) {
+        const item = this.items.get(key);
+
+        if (!item) {
             throw new Error(`Cannot update quantity. Item with ID "${itemId}" does not exist.`);
         }
 
@@ -50,11 +56,12 @@ class ShoppingCart {
         if (newQuantity <= 0) {
             this.items.delete(key);
         } else {
-            const item = this.items.get(key);
-            item.quantity = newQuantity;
+            this.items.set(key, {
+                ...item,
+                quantity: newQuantity,
+            });
         }
     }
-
 
     clearCart() {
         this.items.clear();
@@ -67,9 +74,6 @@ class ShoppingCart {
         }
         return total;
     }
-
-
-
 }
 
 module.exports = ShoppingCart;
